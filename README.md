@@ -12,8 +12,10 @@ An experimental prototype of QnA bot using ChatGPT model to demonstrate the foll
 
 ## Datasets
 data/:
+
 - t-2.csv is a scaped product catalog of a toy e-commerce website.
 - taobao-shop1.csv is scraped product catalog from a taobao shop.
+
 CustomerSupportFAQs/:  customer support FQAs in text format opensourced from EBay.
 
 ## Prepare data stores for retrieval
