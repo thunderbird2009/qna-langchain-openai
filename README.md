@@ -10,9 +10,11 @@ An experimental prototype of QnA bot using ChatGPT model to demonstrate the foll
 - - Either provides a final answer, that is output to user.
 - - Or go to step 1, then the process repeats.
 
-## data/:
-t-2.csv is a scaped product catalog of a toy e-commerce website.
-taobao-shop1.csv is scraped product catalog from a taobao shop.
+## Datasets
+data/:
+- t-2.csv is a scaped product catalog of a toy e-commerce website.
+- taobao-shop1.csv is scraped product catalog from a taobao shop.
+CustomerSupportFAQs/:  customer support FQAs in text format opensourced from EBay.
 
 ## Prepare data stores for retrieval
 - python prepare-prod-store.py --prod-csv=data/t-2.csv --prod-embedding-store=run/prod-embeddings
