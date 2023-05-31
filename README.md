@@ -24,3 +24,4 @@ CustomerSupportFAQs/:  customer support FQAs in text format opensourced from EBa
 
 ## custom-prod-agent:
 - python store-chat.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
+- gradio .\store-chat-fe.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings

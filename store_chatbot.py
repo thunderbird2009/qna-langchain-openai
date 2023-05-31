@@ -96,6 +96,28 @@ class CustServiceTool(BaseTool):
         raise NotImplementedError("CustServiceTool does not support async")
 
 
+class DefaultTool(BaseTool):
+    name = "default_tool"
+    description = """Default tool to handle all questions or requests that can not be handled by
+    other tools.
+    Input: customer request.
+    Output: final answer."""
+    faqsearch: Optional[FAISS] = None
+
+    DEFAULT_TOOL_MSG = """I am a chatbot that can handle product and store customer service questions. 
+    Your question seems to be outside my scope. Could you rephrase it for me to understand better, 
+    or ask a different question? Thx!
+    """
+    
+    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
+        json_data = {'type': 'final_msg', 'msg': self.DEFAULT_TOOL_MSG}
+        return json.dumps(json_data)
+
+    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("CustServiceTool does not support async")
+
+
 # Set up a prompt template
 
 class CustomPromptTemplate(StringPromptTemplate):
@@ -209,10 +231,12 @@ class StoreChatBot:
     Thought: I now know the final answer
     Final Answer: the final answer to the original input question
 
-    Please also follow following rules:
-    If the user's message is not a question, try to lead the conversation to a question.
-    If the user's question can not be address by any Action and you don't have a final answer either,
-        ask the user to paraphrase the question.
+    Please also follow following rules regarding final answer:
+    If the user's message is not a question or request, try to lead the conversation to a question by giving a Final Answer like
+        "How are you. How can I help you today".
+    If the user's question/request together with all the intermediary tuples of (Action, Action Input, Observation) 
+        can not be address by any Action and you don't have a logical final answer either,
+        give a Final Answer like "I don't seem to have an answer. Please rephrase the question for me to try again".
 
     Begin!
 
@@ -225,7 +249,7 @@ class StoreChatBot:
         cst = CustServiceTool(faq_embedding_store, embeddings)
         #cst.init(faq_embedding_store, embeddings)
         pst = ProdSearchTool(prod_embedding_store, embeddings)
-        tools = [pst, cst]
+        tools = [pst, cst, DefaultTool()]
         tool_names = [tool.name for tool in tools]
         prompt = CustomPromptTemplate(
             template=self.template,
@@ -252,19 +276,3 @@ class StoreChatBot:
     def answer(self, user_msg) -> str:
         return self.agent_executor(user_msg)
 
-
-# Parse command line arguments
-args = dict(arg.split('=') for arg in sys.argv[1:])
-faq_embedding_store = args.get("--faq-embedding-store", 'faq-embeddings-store')
-prod_embedding_store = args.get(
-    "--prod-embedding-store", 'prod-embeddings-store')
-openai_api_key = args.get("--openai-api-key", DEFAULT_OPENAI_API_KEY)
-
-store_chat_bot = StoreChatBot(
-    prod_embedding_store=prod_embedding_store,
-    faq_embedding_store=faq_embedding_store,
-    openai_api_key=openai_api_key
-)
-print(store_chat_bot.answer("How do I change my account password?"))
-print(store_chat_bot.answer("Do you have any asus laptop?"))
-print(store_chat_bot.answer("Do you have any Lenovo computer?"))
