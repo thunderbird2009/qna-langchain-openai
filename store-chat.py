@@ -16,11 +16,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 
 DEFAULT_OPENAI_API_KEY = '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'
 
-# print(findFAQs('How do I request a product return?'))
-# print(findProds('Asus laptop'))
-
 ###########################  define my own tools #################################################
-
 
 class ProdSearchTool(BaseTool):
     name = "prod_search"
@@ -68,9 +64,10 @@ class ProdSearchTool(BaseTool):
 
 class CustServiceTool(BaseTool):
     name = "customer_service"
-    description = """General customer service that handles all other than searching product catalog. 
+    description = """General customer service that handles questions about users' store experience,
+    such as account, user profile, order, payment, shipment, etc.
     Input: customer request.
-    Output: A web link for redirect customer."""
+    Output: Text relevant to the question."""
     faqsearch: Optional[FAISS] = None
 
     def __init__(self, faq_embedding_store, embeddings) -> None:
@@ -212,7 +209,10 @@ class StoreChatBot:
     Thought: I now know the final answer
     Final Answer: the final answer to the original input question
 
-    Note that you should give a final answer by formating the json or other text in the Observation if the Observation has a prefix "Tool's final answer: ".
+    Please also follow following rules:
+    If the user's message is not a question, try to lead the conversation to a question.
+    If the user's question can not be address by any Action and you don't have a final answer either,
+        ask the user to paraphrase the question.
 
     Begin!
 
@@ -267,4 +267,4 @@ store_chat_bot = StoreChatBot(
 )
 print(store_chat_bot.answer("How do I change my account password?"))
 print(store_chat_bot.answer("Do you have any asus laptop?"))
-# agent_executor.run("Do you have any Lenovo computer?")
+print(store_chat_bot.answer("Do you have any Lenovo computer?"))
