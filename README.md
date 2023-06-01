@@ -12,16 +12,21 @@ An experimental prototype of QnA bot using ChatGPT model to demonstrate the foll
 
 ## Datasets
 data/:
-
-- t-2.csv is a scaped product catalog of a toy e-commerce website.
+- t-2.csv is a scraped product catalog of a toy e-commerce website.
 - taobao-shop1.csv is scraped product catalog from a taobao shop.
 
 CustomerSupportFAQs/:  customer support FQAs in text format opensourced from EBay.
 
 ## Prepare data stores for retrieval
+Generate an embedding vector store to support the tool of semantic search on products
 - python prepare-prod-store.py --prod-csv=data/t-2.csv --prod-embedding-store=run/prod-embeddings
-- python prepare-faq-store.py --faq-dir=CustomerSupportFAQs --faq-embedding-store=run/faq-embeddings
 
-## custom-prod-agent:
-- python store-chat.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
-- gradio .\store-chat-fe.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
+Generate an embedding vector store to support the tool of semantic search FAQs
+- python prepare-faq-store.py --faq-dir=data/CustomerSupportFAQs --faq-embedding-store=run/faq-embeddings
+
+## Run the chatbot
+Run command line test
+- python store_chat_test.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
+
+Run a web frontend for chatbot
+- python .\store_chat_fe.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
