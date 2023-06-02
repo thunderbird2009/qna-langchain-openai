@@ -13,6 +13,7 @@ import json
 import sys
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.llms import OpenAIChat
 
 DEFAULT_OPENAI_API_KEY = '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'
 
@@ -64,8 +65,8 @@ class ProdSearchTool(BaseTool):
 
 class CustServiceTool(BaseTool):
     name = "customer_service"
-    description = """General customer service that handles questions about users' store experience,
-    such as account, user profile, order, payment, shipment, etc.
+    description = """General customer service that handles questions about buyer's store experience,
+    such as account, user profile, order, payment, shipment, return, shopping cart, etc.
     Input: customer request.
     Output: Text relevant to the question."""
     faqsearch: Optional[FAISS] = None
@@ -115,7 +116,7 @@ class DefaultTool(BaseTool):
 
     async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
         """Use the tool asynchronously."""
-        raise NotImplementedError("CustServiceTool does not support async")
+        raise NotImplementedError("DefaultTool does not support async")
 
 
 # Set up a prompt template
@@ -202,8 +203,13 @@ class MyLLMSingleActionAgent(LLMSingleActionAgent):
                     callbacks=callbacks,
                     **kwargs,
                 )
-                output = output + f'\nsources:\n{obs["src"]}'
-                return self.output_parser.parse(output)
+                if "Final Answer:" in output:
+                    output = output + f'\nsources:\n{obs["src"]}'
+                    return self.output_parser.parse(output)
+                else:
+                    return AgentFinish(return_values=
+                                       {"output": f'I do not have a good answer. But this may be good reference: {obs["src"]}'},
+                                       log="")
 
         output = self.llm_chain.run(
             intermediate_steps=intermediate_steps,
@@ -220,30 +226,28 @@ class StoreChatBot:
 
     {tools}
 
-    Use the following format:
+    If there is no question or request in the user input, use the following format:
 
-    Question: the input question you must answer
-    Thought: you should always think about what to do
-    Action: the action to take, should be one of [{tool_names}]
-    Action Input: the input to the action
-    Observation: the result of the action
-    ... (this Thought/Action/Action Input/Observation can repeat N times)
-    Thought: I now know the final answer
-    Final Answer: the final answer to the original input question
+        Question: the input question you must answer
+        Final Answer: greet and lead to a question, like "Hi, how can I help you today".
 
-    Please also follow following rules regarding final answer:
-    If the user's message is not a question or request, try to lead the conversation to a question by giving a Final Answer like
-        "How are you. How can I help you today".
-    If the user's question/request together with all the intermediary tuples of (Action, Action Input, Observation) 
-        can not be address by any Action and you don't have a logical final answer either,
-        give a Final Answer like "I don't seem to have an answer. Please rephrase the question for me to try again".
+    Else use the following format:
+
+        Question: the input question you must answer
+        Thought: you should always think about what to do
+        Action: the action to take, should be one of [{tool_names}]
+        Action Input: the input to the action
+        Observation: the result of the action
+        ... (this Thought/Action/Action Input/Observation can repeat N times)
+        Thought: I now know the final answer
+        Final Answer: the final answer to the original input question
 
     Begin!
 
     Question: {input}
     {agent_scratchpad}"""
 
-    def __init__(self, prod_embedding_store, faq_embedding_store, openai_api_key):
+    def __init__(self, prod_embedding_store, faq_embedding_store, openai_api_key, verbose=False):
         # Get your embeddings engine ready
         embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         cst = CustServiceTool(faq_embedding_store, embeddings)
@@ -259,7 +263,8 @@ class StoreChatBot:
             input_variables=["input", "intermediate_steps"]
         )
         print(prompt)
-        llm = OpenAI(temperature=0)
+        llm = OpenAIChat(model_name='gpt-3.5-turbo', temperature=0)
+        # llm = OpenAI(temperature=0)
         # LLM chain consisting of the LLM and a prompt
         llm_chain = LLMChain(llm=llm, prompt=prompt)
 
@@ -271,7 +276,7 @@ class StoreChatBot:
             allowed_tools=tool_names
         )
         self.agent_executor = AgentExecutor.from_agent_and_tools(
-            agent=agent, tools=tools, verbose=False)
+            agent=agent, tools=tools, verbose=verbose)
 
     def answer(self, user_msg) -> str:
         return self.agent_executor(user_msg)

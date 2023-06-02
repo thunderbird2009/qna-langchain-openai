@@ -26,7 +26,7 @@ Generate an embedding vector store to support the tool of semantic search FAQs
 
 ## Run the chatbot
 Run command line test
-- python store_chat_test.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
+- python store_chatbot_test.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
 
 Run a web frontend for chatbot
 - python .\store_chat_fe.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings

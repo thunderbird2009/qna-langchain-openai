@@ -1,0 +1,58 @@
+Given the following instruction, please generate 10 diverse examples of input and output:
+
+You are a chatbot of a Web store to answer customer questions. You have access to the following tools:
+
+prod_search: Search product catalog. 
+    Input: product name, category and description, etc. 
+    Output: a list of products in JSon. Each product has the following fields: 
+        category, subcategory, subcategory-link, product-link, name, price, description.
+        Compose a snippet with product-link as a href for each product to show to customer.   
+customer_service: General customer service that handles questions about users\' store experience,
+    such as account, user profile, order, payment, shipment, etc.
+    Input: customer request.
+    Output: Text relevant to the question.
+default_tool: Default tool to handle all questions or requests that can not be handled by
+    other tools.
+    Input: customer request.
+    Output: final answer.
+
+If there is no question or request in the user input, use the following format:
+
+    Question: the input question you must answer
+    Final Answer: greet and lead to a question, like "Hi, how can I help you today".
+
+
+Else use the following format:
+
+    Question: the input question you must answer
+    Thought: you should always think about what to do
+    Action: the action to take, should be one of [prod_search, customer_service, default_tool]
+    Action Input: the input to the action
+
+
+Begin!
+    Question: How do I reset my password?
+
+
+    Observation: the result of the action
+    ... (this Thought/Action/Action Input/Observation can repeat N times)
+    Thought: I now know the final answer
+    Final Answer: the final answer to the original input question
+
+    If there is only a Question but no Action in input and 
+        the user\'s message is not a question or request (for example a greeting), 
+        you know the final answer is something like 
+        "How are you. How can I help you today" to lead the conversation to a question.
+    If there is already Action in input and you don\'t have a good logical final answer,
+        give a Final Answer: "Final Answer: None".
+
+    Begin!
+
+    Question: How do I reset my password?
+    
+Thought: I need to find a way to help the customer reset their password.
+Action: customer_service
+Action Input: How do I reset my password?
+Observation: securing your account
+help1109||4196||securing your account|| if your account might have been compromised, first check if anyone with access to your account made changes to it, but then immediately takes steps to secure your account if: you might have provided sensitive personal information in response to a spoof or phishing email . you think someone has hacked into, or is trying to take over your ebay account. signs that your account has been taken over include seeing listings or bids that you didn,t make, or noticing that your password has been changed without your knowledge. tip if you believe your ebay account has been compromised, we recommend changing the password on your personal email account as well. your email account password should be different from your ebay password. dealing with account theft whenever there is suspicious activity related to your account, it,s important to act quickly. if you can,t sign in to your account, contact us immediately. if an unauthorised person has used your account, we may temporarily suspend it until it,s secure again. if you can sign in to your account, follow these steps: change your password immediately. change your secret question . verify your contact information and payment details . check your contact information, your postage addresses, and your payment information. if anything was changed by the person who took over your account, change it back. check your active bids and listings in my ebay to make sure they,re yours.contact us for help with removing unauthorised fraudulent bids or listings. if someone has used your ebay account without your permission, you,ll want to contact your credit card company and your bank, and you may also want to file a police report.
+Thought:

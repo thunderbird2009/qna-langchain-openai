@@ -29,6 +29,9 @@ for filename in os.listdir(directory):
 print(f"{len(docs)} documents with a total {sum([len(x.page_content) for x in docs])} characters")
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=3000, chunk_overlap=400)
+
+for doc in docs:
+    doc.page_content = doc.page_content.replace("\n", " ")
 docs = text_splitter.split_documents(docs)
 print(f"After split: {len(docs)} documents with a total {sum([len(x.page_content) for x in docs])} characters")
 
