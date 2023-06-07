@@ -15,24 +15,23 @@ class Intent:
 
 # This function contains psedo code.
 def process(msg:str) -> str:
-    intents = []
+    intent = None
     #pseudo_start
-    for each query (either a question or request) in msg: #pseudo_end
-        #pseudo_start
-        if query is about a greeting:
-            prepare an answer to greet the user and also to ask how you can help.  #psedo_end
-            intents.append(Intent(INTENT_greeting, query=query, answer=answer))
-        #pseudo_start
-        elif query is about a inqury on a single product: 
-            for each product quried:
-                extract a tool_query to search on product database #pseudo_end
-                intents.append(Intent(INTENT_prod, query=query, tool_querie=tool_query))
-        #pseudo_start
-        elif query is a customer service question about the web store, such as account, user profile, order, payment, shipment, return, shopping cart, etc
-            prepare a tool_query to search a store's knowledge base. #pseudo_end
-            intents.append(Intent(INTENT_cs, query=query, tool_query=tool_query))
+    if msg has an intent to find a single product: 
+        extract a tool_query to search for product database #pseudo_end
+        intent = Intent(INTENT_prod, tool_querie=tool_query)
+    #pseudo_start
+    elif msg has an intent to ask a customer service question about the web store, such as account, user profile, order, payment, shipment, return, shopping cart, etc
+        prepare a tool_query to search a store's knowledge base. #pseudo_end
+        intent = Intent(INTENT_cs, tool_query=tool_query)
+    #pseudo_start
+    elif msg is intented to be a greeting:
+        prepare an answer to greet the user and also to ask how you can help.  #psedo_end
+        intents.append(Intent(INTENT_greeting, answer=answer))
+    else:
+        intents.append(Intent(INTENT_greeting, query=msg, answer="I don't have an answer."))
 
-    return json.dumps(intents)
+    return json.dumps(intent)
 
 output=process(msg)  
 
