@@ -6,118 +6,16 @@ from typing import List, Union
 from langchain import OpenAI, SerpAPIWrapper, LLMChain
 from langchain.prompts import StringPromptTemplate
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser
-from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
 from langchain.tools.base import BaseTool
 from typing import Optional, Type, Any
 import json
-import sys
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAIChat
 
+from store_tools import ProdSearchTool, CustServiceTool, DefaultTool
+
 DEFAULT_OPENAI_API_KEY = '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'
-
-###########################  define my own tools #################################################
-
-class ProdSearchTool(BaseTool):
-    name = "prod_search"
-    description = """Search product catalog. 
-    Input: product name, category and description, etc. 
-    Output: a list of products in JSon. Each product has the following fields: 
-        category, subcategory, subcategory-link, product-link, name, price, description.
-        Compose a snippet with product-link as a href for each product to show to customer.
-    """
-    docsearch: Optional[FAISS] = None
-
-    def __init__(self, prod_embedding_store, embeddings, **data: Any) -> None:
-        super().__init__(**data)
-        self.docsearch = FAISS.load_local(
-            folder_path=prod_embedding_store, embeddings=embeddings)
-
-    def findProds(self, query) -> str:
-        data_list = self.docsearch.similarity_search(query)
-        # Define a mapping of old keys to new keys (including the NULL mappings)
-        key_mapping = {
-            'category-links': 'category',
-            'subcategory-links': 'subcategory',
-            'subcategory-links-href': 'subcategory-link',
-            'product-links-href': 'product-link',
-            'name': 'name',
-            'price': 'price',
-            'description': 'description'
-        }
-        updated_items = []
-        for item in data_list:
-            updated_item = {key_mapping.get(
-                key, key): value for key, value in item.metadata.items() if key in key_mapping}
-            updated_items.append(updated_item)
-
-        json_data = {'type': 'prod_list', 'products': updated_items}
-        return json.dumps(json_data)
-
-    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
-        return self.findProds(query)
-
-    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
-        """Use the tool asynchronously."""
-        raise NotImplementedError("ProdSearchTool does not support async")
-
-
-class CustServiceTool(BaseTool):
-    name = "customer_service"
-    description = """General customer service that handles questions about buyer's store experience,
-    such as account, user profile, order, payment, shipment, return, shopping cart, etc.
-    Input: customer request.
-    Output: Text relevant to the question."""
-    faqsearch: Optional[FAISS] = None
-
-    def __init__(self, faq_embedding_store, embeddings) -> None:
-        super().__init__()
-        self.faqsearch = FAISS.load_local(
-            folder_path=faq_embedding_store, embeddings=embeddings)
-
-    def findFAQs(self, query) -> str:
-        data_list = self.faqsearch.similarity_search_with_relevance_scores(
-            query, k=1)
-        if len(data_list) == 0 or data_list[0][1] < 0.5:
-            json_data = {'type': 'final_msg',
-                         'msg': 'Have not found an answer from our knowledge base. Will redirect you to an agent.'}
-            return json.dumps(json_data)
-        else:
-            doc = data_list[0][0]
-            json_data = {
-                'type': 'kb_src', 'src': doc.metadata["source"], 'context': doc.page_content}
-            return json.dumps(json_data)
-
-    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
-        return self.findFAQs(query)
-
-    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
-        """Use the tool asynchronously."""
-        raise NotImplementedError("CustServiceTool does not support async")
-
-
-class DefaultTool(BaseTool):
-    name = "default_tool"
-    description = """Default tool to handle all questions or requests that can not be handled by
-    other tools.
-    Input: customer request.
-    Output: final answer."""
-    faqsearch: Optional[FAISS] = None
-
-    DEFAULT_TOOL_MSG = """I am a chatbot that can handle product and store customer service questions. 
-    Your question seems to be outside my scope. Could you rephrase it for me to understand better, 
-    or ask a different question? Thx!
-    """
-    
-    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
-        json_data = {'type': 'final_msg', 'msg': self.DEFAULT_TOOL_MSG}
-        return json.dumps(json_data)
-
-    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
-        """Use the tool asynchronously."""
-        raise NotImplementedError("DefaultTool does not support async")
-
 
 # Set up a prompt template
 
@@ -222,30 +120,33 @@ class MyLLMSingleActionAgent(LLMSingleActionAgent):
 
 class StoreChatBot:
     # Set up the base template
-    template = """You are a chatbot of a Web store to answer customer questions. You have access to the following tools:
+    template = """you are a chatbot of a Web store to answer customer questions. You have access to the following tools:
 
-    {tools}
+{tools}
 
-    If there is no question or request in the user input, use the following format:
+use the following format:
 
-        Question: the input question you must answer
-        Final Answer: greet and lead to a question, like "Hi, how can I help you today".
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
 
-    Else use the following format:
+(If there is no question or no request in the user input or it is only a greeting,
+...skip Thought/Action/Action Input/Observation, and give a Final Answer to greet the user and ask how you can help them.)
 
-        Question: the input question you must answer
-        Thought: you should always think about what to do
-        Action: the action to take, should be one of [{tool_names}]
-        Action Input: the input to the action
-        Observation: the result of the action
-        ... (this Thought/Action/Action Input/Observation can repeat N times)
-        Thought: I now know the final answer
-        Final Answer: the final answer to the original input question
+Begin!
 
-    Begin!
+Question: {input}
+{agent_scratchpad}"""
 
-    Question: {input}
-    {agent_scratchpad}"""
+    template2 = """
+    
+    
+    """
 
     def __init__(self, prod_embedding_store, faq_embedding_store, openai_api_key, verbose=False):
         # Get your embeddings engine ready
@@ -263,8 +164,8 @@ class StoreChatBot:
             input_variables=["input", "intermediate_steps"]
         )
         print(prompt)
-        llm = OpenAIChat(model_name='gpt-3.5-turbo', temperature=0)
-        # llm = OpenAI(temperature=0)
+        # llm = OpenAIChat(model_name='gpt-3.5-turbo', temperature=0)
+        llm = OpenAI(model_name='text-davinci-003', temperature=0)
         # LLM chain consisting of the LLM and a prompt
         llm_chain = LLMChain(llm=llm, prompt=prompt)
 
