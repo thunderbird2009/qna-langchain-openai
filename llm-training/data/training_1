@@ -1,0 +1,215 @@
+Example 1:
+msg = "Hi there! Do you have any recommendations for a new laptop?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_prod", "tool_query": "laptop"}]
+
+Example 2:
+msg = "What are the current deals and promotions available?"
+output = [{"intent_name": "Intent_cs", "tool_query": "current deals and promotions"}]
+
+Example 3:
+msg = "I need help with a technical issue on my smartphone."
+output = [{"intent_name": "Intent_cs", "tool_query": "smartphone technical issue"}]
+
+Example 4:
+msg = "Can you provide information on the warranty for your products?"
+output = [{"intent_name": "Intent_cs", "tool_query": "product warranty"}]
+
+Example 5:
+msg = "Hello! How long does the shipping usually take?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "shipping duration"}]
+
+Example 6:
+msg = "I want to check the status of my order."
+output = [{"intent_name": "Intent_cs", "tool_query": "order status"}]
+
+Example 7:
+msg = "Can you recommend some budget-friendly headphones?"
+output = [{"intent_name": "Intent_prod", "tool_query": "budget-friendly headphones"}]
+
+Example 8:
+msg = "How can I track my package?"
+output = [{"intent_name": "Intent_cs", "tool_query": "package tracking"}]
+
+Example 9:
+msg = "I'm having trouble logging into my account. Can you help?"
+output = [{"intent_name": "Intent_cs", "tool_query": "account login issue"}]
+
+Example 10:
+msg = "Hi! I need assistance with a refund for a recent purchase."
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "refund assistance"}]
+
+Example 1:
+msg = "I'm looking for a new pair of running shoes. Can you recommend any?"
+output = [{"intent_name": "Intent_prod", "tool_query": "running shoes"}]
+
+Example 2:
+msg = "What are the latest smartphones available in your store?"
+output = [{"intent_name": "Intent_prod", "tool_query": "latest smartphones"}]
+
+Example 3:
+msg = "Do you have any discounts on home appliances?"
+output = [{"intent_name": "Intent_prod", "tool_query": "home appliances discounts"}]
+
+Example 4:
+msg = "I'm interested in buying a digital camera. Any recommendations?"
+output = [{"intent_name": "Intent_prod", "tool_query": "digital camera"}]
+
+Example 5:
+msg = "Can you provide information on the specifications of the new gaming console?"
+output = [{"intent_name": "Intent_prod", "tool_query": "new gaming console specifications"}]
+
+Example 6:
+msg = "I need a laptop for graphic design. Which models do you recommend?"
+output = [{"intent_name": "Intent_prod", "tool_query": "laptop for graphic design"}]
+
+Example 7:
+msg = "Are there any sales on office furniture?"
+output = [{"intent_name": "Intent_prod", "tool_query": "office furniture sales"}]
+
+Example 8:
+msg = "I want to buy a gift for my friend who loves cooking. Any ideas?"
+output = [{"intent_name": "Intent_prod", "tool_query": "gift for cooking enthusiasts"}]
+
+Example 9:
+msg = "I'm interested in purchasing a smartwatch. Can you provide options within my budget?"
+output = [{"intent_name": "Intent_prod", "tool_query": "smartwatch within budget"}]
+
+Example 10:
+msg = "What are the best-selling books in your store currently?"
+output = [{"intent_name": "Intent_prod", "tool_query": "best-selling books"}]
+
+Example 1:
+msg = "Hi! How can I track my recent order?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "order tracking"}]
+
+Example 2:
+msg = "I have a question about your return policy."
+output = [{"intent_name": "Intent_cs", "tool_query": "return policy"}]
+
+Example 3:
+msg = "Do you have any recommendations for a good laptop under $1000?"
+output = [{"intent_name": "Intent_prod", "tool_query": "laptop under $1000"}]
+
+Example 4:
+msg = "What are the accepted payment methods?"
+output = [{"intent_name": "Intent_cs", "tool_query": "accepted payment methods"}]
+
+Example 5:
+msg = "How do I contact customer support?"
+output = [{"intent_name": "Intent_cs", "tool_query": "contact customer support"}]
+
+Example 6:
+msg = "I'm looking for a specific book. Can you help me find it?"
+output = [{"intent_name": "Intent_prod", "tool_query": "specific book"}]
+
+Example 7:
+msg = "Hello! I have a general inquiry about your store."
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "general store inquiry"}]
+
+Example 8:
+msg = "Can you provide information on the warranty for your electronics?"
+output = [{"intent_name": "Intent_cs", "tool_query": "electronics warranty"}]
+
+Example 9:
+msg = "I want to purchase a gift card. How can I do that?"
+output = [{"intent_name": "Intent_prod", "tool_query": "gift card purchase"}]
+
+Example 10:
+msg = "Are there any ongoing promotions for new customers?"
+output = [{"intent_name": "Intent_cs", "tool_query": "new customer promotions"}]
+
+Example 1:
+msg = "Hi! Do you have any special discounts for students?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "student discounts"}]
+
+Example 2:
+msg = "I'm experiencing issues with the product I purchased. How can I get support?"
+output = [{"intent_name": "Intent_cs", "tool_query": "product support"}]
+
+Example 3:
+msg = "Can you recommend a reliable brand for home appliances?"
+output = [{"intent_name": "Intent_prod", "tool_query": "reliable home appliance brands"}]
+
+Example 4:
+msg = "What are the delivery options available?"
+output = [{"intent_name": "Intent_cs", "tool_query": "delivery options"}]
+
+Example 5:
+msg = "I'm interested in buying a new smartphone. Any suggestions within a specific budget?"
+output = [{"intent_name": "Intent_prod", "tool_query": "smartphone within budget"}]
+
+Example 6:
+msg = "What are the store hours on weekends?"
+output = [{"intent_name": "Intent_cs", "tool_query": "weekend store hours"}]
+
+Example 7:
+msg = "Hi! I have a question about your loyalty program."
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "loyalty program"}]
+
+Example 8:
+msg = "I'm looking for a specific type of clothing. Can you help me find it?"
+output = [{"intent_name": "Intent_prod", "tool_query": "specific clothing item"}]
+
+Example 9:
+msg = "What are the steps to place an online order?"
+output = [{"intent_name": "Intent_cs", "tool_query": "online order process"}]
+
+Example 10:
+msg = "I'm interested in purchasing a new gaming console. Can you provide recommendations?"
+output = [{"intent_name": "Intent_prod", "tool_query": "gaming console recommendations"}]
+
+Example 11:
+msg = "Hi! Can I return an item if I change my mind after purchasing it?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "return policy"}]
+
+Example 12:
+msg = "What are the current trending products in your store?"
+output = [{"intent_name": "Intent_prod", "tool_query": "trending products"}]
+
+Example 13:
+msg = "I need help with setting up my new device. What should I do?"
+output = [{"intent_name": "Intent_cs", "tool_query": "device setup assistance"}]
+
+Example 14:
+msg = "Do you offer international shipping?"
+output = [{"intent_name": "Intent_cs", "tool_query": "international shipping"}]
+
+Example 15:
+msg = "I'm looking for a specific type of software. Can you assist me in finding it?"
+output = [{"intent_name": "Intent_prod", "tool_query": "specific software"}]
+
+Example 16:
+msg = "Hi! What are the available payment options?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "payment options"}]
+
+Example 17:
+msg = "What are the recommended maintenance steps for the product I purchased?"
+output = [{"intent_name": "Intent_cs", "tool_query": "product maintenance recommendations"}]
+
+Example 18:
+msg = "Can you suggest a good fitness tracker within a certain price range?"
+output = [{"intent_name": "Intent_prod", "tool_query": "fitness tracker within price range"}]
+
+Example 19:
+msg = "Hi! Is there a mobile app available for your store?"
+output = [{"intent_name": "Intent_greeting", "answer": "Hello! How can I assist you today?"},
+{"intent_name": "Intent_cs", "tool_query": "mobile app availability"}]
+
+Example 20:
+msg = "I'm interested in purchasing a specific brand of headphones. Can you help me find them?"
+output = [{"intent_name": "Intent_prod", "tool_query": "specific brand headphones"}]
+
+
+
+
+
+
