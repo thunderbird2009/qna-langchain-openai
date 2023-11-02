@@ -1,4 +1,4 @@
-# langchain-openai-examples
+# qna bot
 An experimental prototype of QnA bot using ChatGPT model to demonstrate the following pattern:
 - Step 0: Receives a user input and calls LLM with it.
 - Step 1: LLM identifies an intent and extract properties for the intent from the input.
@@ -30,3 +30,7 @@ Run command line test
 
 Run a web frontend for chatbot
 - python .\store_chat_fe.py --prod-embedding-store=run/prod-embeddings --faq-embedding-store=run/faq-embeddings
+
+## Fine-tune an Opensource LLM
+llm-training directory contains notebooks that applies qlora based fine-tuning on falcon-7b using examples in /data 
+and prompts in /prompts
